@@ -46,17 +46,6 @@
         android:padding="16dp"
         android:gravity="center_vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/goal_label"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="@color/accent"
-            android:paddingEnd="8dp"
-            android:paddingStart="0dp"
-            android:labelFor="@+id/newTarget"/>
-
         <android.support.design.widget.TextInputLayout
             android:id="@+id/inputLayoutUsername"
             android:layout_width="match_parent"
@@ -67,6 +56,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="number"
+                android:hint="@string/goal_label"
                 android:textSize="24sp"/>
 
         </android.support.design.widget.TextInputLayout>

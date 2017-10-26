@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.MenuItem
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.Result
 import com.google.gson.Gson
@@ -12,7 +13,6 @@ import kotlinx.android.synthetic.main.activity_set_target.*
 import samtaylor.stravaapp.R
 import samtaylor.stravaapp.data.Persistence
 import samtaylor.stravaapp.model.Athlete
-import java.util.*
 
 class SetTargetActivity : AppCompatActivity() {
 
@@ -21,6 +21,8 @@ class SetTargetActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_set_target)
         title = getString(R.string.title_set_target)
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val accessToken = getSharedPreferences(getString(R.string.app_name), Context.MODE_PRIVATE).getString("access_token", null)
         if (accessToken != null) {
@@ -32,7 +34,11 @@ class SetTargetActivity : AppCompatActivity() {
                     is Result.Success -> {
 
                         val athlete = Gson().fromJson<Athlete>(result.get(), Athlete::class.java)
-                        update(athlete)
+
+                        Picasso.with(this).load(athlete.profile).into(profileImage)
+
+                        name.text = getString(R.string.name_format, athlete.firstname, athlete.lastname)
+                        city.text = athlete.city
                     }
 
                     else -> {
@@ -42,6 +48,12 @@ class SetTargetActivity : AppCompatActivity() {
                         finish()
                     }
                 }
+            }
+
+            val currentTarget = Persistence(this).getInt(Persistence.TARGET, 0)
+            if (currentTarget != 0) {
+
+                newTarget.setText("$currentTarget")
             }
 
 //            val goal = 1000000F // (1000km)
@@ -83,31 +95,35 @@ class SetTargetActivity : AppCompatActivity() {
         }
     }
 
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
 
-    private fun monthToString(month: Int) = when(month) {
+        return when (item?.itemId) {
 
-            Calendar.JANUARY -> "January"
-            Calendar.FEBRUARY -> "February"
-            Calendar.MARCH -> "March"
-            Calendar.APRIL -> "April"
-            Calendar.MAY -> "May"
-            Calendar.JUNE -> "June"
-            Calendar.JULY -> "July"
-            Calendar.AUGUST -> "August"
-            Calendar.SEPTEMBER -> "September"
-            Calendar.OCTOBER -> "October"
-            Calendar.NOVEMBER -> "November"
-            Calendar.DECEMBER -> "December"
-            else -> "Unknown"
+            android.R.id.home -> {
+
+                onBackPressed()
+                true
+            }
+
+            else -> super.onOptionsItemSelected(item)
         }
-
-    private fun update(athlete: Athlete) {
-
-        Picasso.with(this).load(athlete.profile).into(profileImage)
-
-        name.text = getString(R.string.name_format, athlete.firstname, athlete.lastname)
-        city.text = athlete.city
-
-
     }
+
+
+//    private fun monthToString(month: Int) = when(month) {
+//
+//            Calendar.JANUARY -> "January"
+//            Calendar.FEBRUARY -> "February"
+//            Calendar.MARCH -> "March"
+//            Calendar.APRIL -> "April"
+//            Calendar.MAY -> "May"
+//            Calendar.JUNE -> "June"
+//            Calendar.JULY -> "July"
+//            Calendar.AUGUST -> "August"
+//            Calendar.SEPTEMBER -> "September"
+//            Calendar.OCTOBER -> "October"
+//            Calendar.NOVEMBER -> "November"
+//            Calendar.DECEMBER -> "December"
+//            else -> "Unknown"
+//        }
 }

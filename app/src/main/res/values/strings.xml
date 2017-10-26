@@ -3,10 +3,11 @@
 
     <string name="sign_out">Sign Out</string>
     <string name="name_format">%1$s %2$s</string>
-    <string name="goal_hint">Target km for %1$s</string>
     <string name="change_target">Change Target</string>
-    <string name="goal_label">Goal:</string>
+    <string name="goal_label">Target in km</string>
     <string name="save_button_label">Save</string>
+    <string name="sign_out_dialog">Are you sure you want to sign out?</string>
+    <string name="cancel">Cancel</string>
 
     <string name="title_set_target">Set a Target</string>
     <string name="title_authenticate">Connect to Strava</string>

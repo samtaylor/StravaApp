@@ -1,5 +1,6 @@
 package samtaylor.stravaapp.ui
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -30,10 +31,17 @@ class MainActivity : AppCompatActivity() {
 
             R.id.menuSignOut -> {
 
-                Persistence(this).remove(Persistence.ACCESS_TOKEN)
+                AlertDialog.Builder(this).setMessage(R.string.sign_out_dialog).setNegativeButton(R.string.cancel) { dialog, _ ->
 
-                startActivity(Intent(this, SignInActivity::class.java))
-                finish()
+                    dialog.dismiss()
+                }.setPositiveButton(R.string.sign_out) { dialog, _ ->
+
+                    Persistence(this).remove(Persistence.ACCESS_TOKEN)
+
+                    startActivity(Intent(this, SignInActivity::class.java))
+                    dialog.dismiss()
+                    finish()
+                }.create().show()
 
                 true
             }
