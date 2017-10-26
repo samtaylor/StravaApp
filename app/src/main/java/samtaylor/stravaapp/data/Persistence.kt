@@ -10,7 +10,8 @@ class Persistence(private val context: Context) {
     get() = context.getSharedPreferences(context.getString(R.string.app_name), Context.MODE_PRIVATE)
 
     fun getString(key: String, default: String? = null) : String? = sharedPreferences.getString(key, default)
-    fun setString(key: String, value: String) = sharedPreferences.edit().putString(key, value).apply()
+    fun putString(key: String, value: String) = sharedPreferences.edit().putString(key, value).apply()
+    fun remove(key: String) = sharedPreferences.edit().remove(key).apply()
 
     companion object {
 

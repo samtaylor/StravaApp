@@ -1,6 +1,5 @@
 package samtaylor.stravaapp.ui
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -13,6 +12,7 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
 import samtaylor.stravaapp.R
 import samtaylor.stravaapp.data.ActivityCatalogue
+import samtaylor.stravaapp.data.Persistence
 import samtaylor.stravaapp.model.Athlete
 import java.util.*
 
@@ -38,8 +38,9 @@ class MainActivity : AppCompatActivity() {
 
                     else -> {
 
-                        getSharedPreferences(getString(R.string.app_name), Context.MODE_PRIVATE).edit().remove("access_token").apply()
-                        putButtonInSignInState()
+                        Persistence(this).remove(Persistence.ACCESS_TOKEN)
+                        startActivity(Intent(this, SignInActivity::class.java))
+                        finish()
                     }
                 }
             }
@@ -66,7 +67,8 @@ class MainActivity : AppCompatActivity() {
             }
         } else {
 
-            putButtonInSignInState()
+            startActivity(Intent(this, SignInActivity::class.java))
+            finish()
         }
     }
 
@@ -87,53 +89,11 @@ class MainActivity : AppCompatActivity() {
             else -> "Unknown"
         }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-
-        if (requestCode == 101) {
-
-            if (resultCode == Activity.RESULT_OK && data != null) {
-
-                val accessToken = data.getStringExtra("access_token")
-                val athlete = data.getParcelableExtra<Athlete>("athlete")
-
-                update(athlete)
-
-                getSharedPreferences(getString(R.string.app_name), Context.MODE_PRIVATE).edit().putString("access_token", accessToken).apply()
-            }
-        }
-    }
-
     private fun update(athlete: Athlete) {
 
         Picasso.with(this).load(athlete.profile).into(profileImage)
 
         name.text = getString(R.string.name_format, athlete.firstname, athlete.lastname)
         city.text = athlete.city
-
-        putButtonInSignOutState()
-    }
-
-    private fun putButtonInSignOutState() {
-
-        authButton.text = getString(R.string.sign_out)
-        authButton.setOnClickListener {
-
-            getSharedPreferences(getString(R.string.app_name), Context.MODE_PRIVATE).edit().remove("access_token").apply()
-            putButtonInSignInState()
-        }
-    }
-
-    private fun putButtonInSignInState() {
-
-        name.text = ""
-        city.text = ""
-
-        profileImage.setImageResource(android.R.color.transparent)
-
-        authButton.text = getString(R.string.sign_in)
-        authButton.setOnClickListener {
-
-            startActivityForResult(Intent(this, AuthActivity::class.java), 101)
-        }
     }
 }

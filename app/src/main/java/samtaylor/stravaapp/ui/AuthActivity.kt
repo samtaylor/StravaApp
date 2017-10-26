@@ -4,18 +4,12 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.MenuItem
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import com.github.kittinunf.fuel.httpPost
-import com.github.kittinunf.result.Result
-import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_auth.*
-import org.json.JSONObject
 import samtaylor.stravaapp.R
-import samtaylor.stravaapp.data.Persistence
-import samtaylor.stravaapp.model.Athlete
-import java.util.ArrayList
 
 class AuthActivity : AppCompatActivity() {
 
@@ -23,6 +17,8 @@ class AuthActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         webView.webViewClient = object: WebViewClient() {
 
@@ -34,33 +30,11 @@ class AuthActivity : AppCompatActivity() {
 
                         val code = request.url.getQueryParameter("code")
 
-                        val values = ArrayList<Pair<String, String>>()
-                        values.add("client_id" to "21008")
-                        values.add("client_secret" to "add22af4395113c65875779d96c5220d6b826d8e")
-                        values.add("code" to code)
+                        val intent = Intent()
+                        intent.putExtra(SignInActivity.AUTH_CODE, code)
 
-                        "https://www.strava.com/oauth/token".httpPost(values).responseString { _, _, result ->
-
-                            when (result) {
-
-                                is Result.Success -> {
-
-                                    val json = JSONObject(result.get())
-
-                                    val accessToken = json.getString("access_token")
-
-                                    Persistence(this@AuthActivity).setString(Persistence.ACCESS_TOKEN, accessToken)
-                                    startActivity(Intent(this@AuthActivity, MainActivity::class.java))
-
-                                    finish()
-                                }
-
-                                else -> {
-
-                                    finish()
-                                }
-                            }
-                        }
+                        setResult(Activity.RESULT_OK, intent)
+                        finish()
                     } else {
 
                         webView.loadUrl(request.url.toString())
@@ -75,5 +49,19 @@ class AuthActivity : AppCompatActivity() {
         }
 
         webView.loadUrl("https://www.strava.com/oauth/authorize?client_id=21008&response_type=code&redirect_uri=http://127.0.0.1&approval_prompt=force")
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+
+        return when (item?.itemId) {
+
+            android.R.id.home -> {
+
+                onBackPressed()
+                true
+            }
+
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 }
