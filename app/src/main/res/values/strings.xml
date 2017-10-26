@@ -7,6 +7,8 @@
     <string name="change_target">Change Target</string>
     <string name="goal_label">Goal:</string>
     <string name="save_button_label">Save</string>
+
     <string name="title_set_target">Set a Target</string>
     <string name="title_authenticate">Connect to Strava</string>
+    <string name="title_main">My Adjusted Pace</string>
 </resources>

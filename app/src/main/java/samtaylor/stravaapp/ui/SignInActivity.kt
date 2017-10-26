@@ -19,19 +19,28 @@ class SignInActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
-        if (Persistence(this).getString(Persistence.ACCESS_TOKEN) == null) {
+        setContentView(R.layout.activity_sign_in)
+    }
 
-            setContentView(R.layout.activity_sign_in)
+    override fun onResume() {
 
-            signInButton.setOnClickListener {
+        super.onResume()
+        when {
+            Persistence(this).getString(Persistence.ACCESS_TOKEN) == null -> signInButton.setOnClickListener {
 
                 startActivityForResult(Intent(this, AuthActivity::class.java), AUTH_REQUEST)
             }
-        }
-        else {
 
-            startActivity(Intent(this, SetTargetActivity::class.java))
-            finish()
+            Persistence(this).getInt(Persistence.TARGET) == 0 -> {
+
+                startActivity(Intent(this, SetTargetActivity::class.java))
+            }
+
+            else -> {
+
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
+            }
         }
     }
 
@@ -61,7 +70,6 @@ class SignInActivity : AppCompatActivity() {
                         Persistence(this).putString(Persistence.ACCESS_TOKEN, accessToken)
 
                         startActivity(Intent(this, SetTargetActivity::class.java))
-                        finish()
                     }
 
                     else -> {
