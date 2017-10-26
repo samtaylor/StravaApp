@@ -5,6 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.Result
 import com.google.gson.Gson
@@ -69,6 +72,33 @@ class MainActivity : AppCompatActivity() {
 
             startActivity(Intent(this, SignInActivity::class.java))
             finish()
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+
+        MenuInflater(this).inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+
+        return when (item?.itemId) {
+
+            R.id.menuSignOut -> {
+
+                Persistence(this).remove(Persistence.ACCESS_TOKEN)
+
+                startActivity(Intent(this, SignInActivity::class.java))
+                finish()
+
+                true
+            }
+
+            else -> {
+
+                return super.onOptionsItemSelected(item)
+            }
         }
     }
 

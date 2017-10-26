@@ -71,6 +71,14 @@ class AuthActivity : AppCompatActivity() {
         webView.loadUrl("https://www.strava.com/oauth/authorize?client_id=21008&response_type=code&redirect_uri=http://127.0.0.1&approval_prompt=force")
     }
 
+    override fun onDestroy() {
+
+        webView.webChromeClient = null
+        webView.webViewClient = null
+
+        super.onDestroy()
+    }
+
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
 
         return when (item?.itemId) {
