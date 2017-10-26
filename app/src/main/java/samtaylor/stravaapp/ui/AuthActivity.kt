@@ -2,9 +2,12 @@ package samtaylor.stravaapp.ui
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import android.view.View
+import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -21,6 +24,16 @@ class AuthActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         webView.webViewClient = object: WebViewClient() {
+
+            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+
+                progressBar.visibility = View.VISIBLE
+            }
+
+            override fun onPageFinished(view: WebView?, url: String?) {
+
+                progressBar.visibility = View.GONE
+            }
 
             override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
 
@@ -44,6 +57,13 @@ class AuthActivity : AppCompatActivity() {
 
                     false
                 }
+
+            }
+        }
+
+        webView.webChromeClient = object: WebChromeClient() {
+
+            override fun onProgressChanged(view: WebView, newProgress: Int) {
 
             }
         }
