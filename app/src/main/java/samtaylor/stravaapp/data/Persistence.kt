@@ -11,10 +11,15 @@ class Persistence(private val context: Context) {
 
     fun getString(key: String, default: String? = null) : String? = sharedPreferences.getString(key, default)
     fun putString(key: String, value: String) = sharedPreferences.edit().putString(key, value).apply()
+
+    fun getInt(key: String, default: Int = 0) : Int = sharedPreferences.getInt(key, default)
+    fun putInt(key: String, value: Int) = sharedPreferences.edit().putInt(key, value).apply()
+
     fun remove(key: String) = sharedPreferences.edit().remove(key).apply()
 
     companion object {
 
         val ACCESS_TOKEN = "access_token"
+        val TARGET = "target"
     }
 }

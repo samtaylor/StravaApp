@@ -5,4 +5,8 @@
         android:id="@+id/menuSignOut"
         android:title="@string/sign_out" />
 
+    <item
+        android:id="@+id/menuChangeTarget"
+        android:title="@string/change_target" />
+
 </menu>

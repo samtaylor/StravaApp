@@ -20,6 +20,7 @@ class AuthActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
+        title = getString(R.string.title_authenticate)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 

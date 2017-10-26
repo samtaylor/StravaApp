@@ -5,26 +5,24 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.Result
 import com.google.gson.Gson
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_set_target.*
 import samtaylor.stravaapp.R
 import samtaylor.stravaapp.data.ActivityCatalogue
 import samtaylor.stravaapp.data.Persistence
 import samtaylor.stravaapp.model.Athlete
 import java.util.*
 
-class MainActivity : AppCompatActivity() {
+class SetTargetActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_set_target)
+        title = getString(R.string.title_set_target)
 
         val accessToken = getSharedPreferences(getString(R.string.app_name), Context.MODE_PRIVATE).getString("access_token", null)
         if (accessToken != null) {
@@ -48,59 +46,70 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            val goal = 1000000F // (1000km)
-            var distanceToDate = 0F
-
-            ActivityCatalogue().fetch(accessToken) {
-
-                it.filterByType("Ride").filterByYear("2015").groupByWeek().toSortedMap(Comparator { first, second ->
-
-                    first.compareTo(second)
-                }).forEach {
-
-//                    Log.v("XXX", "${it.value.size} rides in week ${it.key} of 2015 = ${it.value.totalDistance/1000}km")
-                    distanceToDate += it.value.totalDistance
-
-//                    val monthsRemaining = 12 - (it.key + 1)
-                    val weeksRemaining = 52 - it.key
-                    val adjustedPace = (goal - distanceToDate) / weeksRemaining
+//            val goal = 1000000F // (1000km)
+//            var distanceToDate = 0F
 //
-                    Log.v("XXX", "${it.value.size} rides in week ${it.key} of 2015 = ${it.value.totalDistance/1000}km => adjustedPace = ${adjustedPace/1000}km per week")
-                }
-            }
+//            ActivityCatalogue().fetch(accessToken) {
+//
+//                it.filterByType("Ride").filterByYear("2015").groupByWeek().toSortedMap(Comparator { first, second ->
+//
+//                    first.compareTo(second)
+//                }).forEach {
+//
+////                    Log.v("XXX", "${it.value.size} rides in week ${it.key} of 2015 = ${it.value.totalDistance/1000}km")
+//                    distanceToDate += it.value.totalDistance
+//
+////                    val monthsRemaining = 12 - (it.key + 1)
+//                    val weeksRemaining = 52 - it.key
+//                    val adjustedPace = (goal - distanceToDate) / weeksRemaining
+////
+//                    Log.v("XXX", "${it.value.size} rides in week ${it.key} of 2015 = ${it.value.totalDistance/1000}km => adjustedPace = ${adjustedPace/1000}km per week")
+//                }
+//            }
         } else {
 
             startActivity(Intent(this, SignInActivity::class.java))
             finish()
         }
-    }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        saveButton.setOnClickListener {
 
-        MenuInflater(this).inflate(R.menu.menu_main, menu)
-        return true
-    }
+            if (newTarget.text.isNullOrEmpty()) {
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+            } else {
 
-        return when (item?.itemId) {
+                Persistence(this).putInt(Persistence.TARGET, Integer.parseInt(newTarget.text.toString()))
 
-            R.id.menuSignOut -> {
-
-                Persistence(this).remove(Persistence.ACCESS_TOKEN)
-
-                startActivity(Intent(this, SignInActivity::class.java))
-                finish()
-
-                true
-            }
-
-            else -> {
-
-                return super.onOptionsItemSelected(item)
             }
         }
     }
+
+//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+//
+//        MenuInflater(this).inflate(R.menu.menu_main, menu)
+//        return true
+//    }
+//
+//    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+//
+//        return when (item?.itemId) {
+//
+//            R.id.menuSignOut -> {
+//
+//                Persistence(this).remove(Persistence.ACCESS_TOKEN)
+//
+//                startActivity(Intent(this, SignInActivity::class.java))
+//                finish()
+//
+//                true
+//            }
+//
+//            else -> {
+//
+//                return super.onOptionsItemSelected(item)
+//            }
+//        }
+//    }
 
     private fun monthToString(month: Int) = when(month) {
 
@@ -125,5 +134,7 @@ class MainActivity : AppCompatActivity() {
 
         name.text = getString(R.string.name_format, athlete.firstname, athlete.lastname)
         city.text = athlete.city
+
+
     }
 }

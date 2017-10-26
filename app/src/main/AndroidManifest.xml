@@ -20,9 +20,10 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.MainActivity" />
+        <activity android:name=".ui.SetTargetActivity"
+                  android:windowSoftInputMode="adjustResize"/>
 
-        <activity android:name=".ui.AuthActivity" />
+        <activity android:name=".ui.AuthActivity"/>
 
     </application>
 
