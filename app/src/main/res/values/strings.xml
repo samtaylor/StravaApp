@@ -16,7 +16,7 @@
     <string name="week_format">week %1$d starting %2$s</string>
     <string name="km_this_week">km this week</string>
     <string name="total_km_to_date">km to date</string>
-    <string name="adjusted_pace">Adjusted Pace (km/week)</string>
+    <string name="adjusted_pace">km/week</string>
 
     <string name="km_format">%1$.1f km</string>
     <string name="pace_per_week_format">%1$.1f</string>

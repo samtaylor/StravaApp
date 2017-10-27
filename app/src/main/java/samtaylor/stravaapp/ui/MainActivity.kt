@@ -3,11 +3,14 @@ package samtaylor.stravaapp.ui
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.*
 import android.widget.TextView
+import com.jjoe64.graphview.series.DataPoint
+import com.jjoe64.graphview.series.LineGraphSeries
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.list_item_pace.view.*
 import samtaylor.stravaapp.R
@@ -15,6 +18,7 @@ import samtaylor.stravaapp.data.ActivityCatalogue
 import samtaylor.stravaapp.data.Persistence
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity() {
 
@@ -33,6 +37,7 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
 
         recyclerView.visibility = View.GONE
+        lineChart.visibility = View.GONE
         progressBar.visibility = View.VISIBLE
 
         val accessToken = Persistence(this).getString(Persistence.ACCESS_TOKEN)
@@ -46,13 +51,44 @@ class MainActivity : AppCompatActivity() {
 
                     val data = it.ridesOnly().currentYearOnly().groupByWeek(true).toSortedMap(kotlin.Comparator { first, second ->
 
-                        //first.compareTo(second)
                         second.compareTo(first)
                     }).values.toList()
 
                     recyclerView.adapter = ActivityAdapter(data, targetInMetres)
 
+                    var totalDistance = 0.0
+                    val distanceArray = Array(data.size) { index ->
+
+                        totalDistance += data.asReversed()[index].totalDistance / 1000.0
+                        DataPoint(index.toDouble(), totalDistance)
+                    }
+
+                    totalDistance = 0.0
+                    val adjustedPaceArray = Array(data.size) { index ->
+
+                        totalDistance += data.asReversed()[index].totalDistance
+                        val adjustedPace = (targetInMetres - totalDistance) / (52 - (index + 1)) / 1000.0
+
+                        DataPoint(index.toDouble(), adjustedPace)
+                    }
+
+                    val distanceSeries = LineGraphSeries<DataPoint>(distanceArray)
+                    distanceSeries.color = resources.getColor(R.color.primary_dark)
+
+                    val adjustedPaceSeries = LineGraphSeries<DataPoint>(adjustedPaceArray)
+                    adjustedPaceSeries.color = resources.getColor(R.color.accent)
+
+                    lineChart.addSeries(distanceSeries)
+                    lineChart.secondScale.addSeries(adjustedPaceSeries)
+                    lineChart.secondScale.setMinY(0.0)
+                    lineChart.secondScale.setMaxY(10.0)
+
+                    lineChart.viewport.isXAxisBoundsManual = true
+                    lineChart.viewport.setMinX(0.0)
+                    lineChart.viewport.setMaxX(52.0)
+
                     recyclerView.visibility = View.VISIBLE
+                    lineChart.visibility = View.VISIBLE
                     progressBar.visibility = View.GONE
                 }
             } else {
