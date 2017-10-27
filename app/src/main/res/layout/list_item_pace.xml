@@ -4,89 +4,132 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="8dp">
-
-    <TextView
-        android:id="@+id/date"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:text="Week commencing 01/01/2017"/>
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingTop="8dp"
-        android:weightSum="3">
+        android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="horizontal"
-            android:paddingEnd="4dp">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="4dp">
 
             <TextView
-                android:gravity="start"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/km_this_week"/>
-
-            <TextView
-                android:id="@+id/distance"
-                android:gravity="end|center_vertical"
+                android:id="@+id/date"
+                android:gravity="center"
+                android:textStyle="bold"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:text="1000km"/>
+                android:layout_height="wrap_content"
+                android:textColor="@color/divider"
+                tools:text="01/01/2017"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="8dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:paddingEnd="4dp">
+
+                    <TextView
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/secondary_text"
+                        android:text="@string/km_this_week"/>
+
+                    <TextView
+                        android:id="@+id/distance"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:textSize="18dp"
+                        android:textStyle="bold"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textColor="@color/primary_dark"
+                        tools:text="1000km"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp">
+
+                    <TextView
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/secondary_text"
+                        android:text="@string/total_km_to_date"/>
+
+                    <TextView
+                        android:id="@+id/totalDistanceToDate"
+                        android:maxLines="1"
+                        android:gravity="center"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textStyle="bold"
+                        android:textColor="@color/primary_dark"
+                        android:textSize="18dp"
+                        tools:text="1000km"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal"
-            android:paddingStart="4dp"
-            android:paddingEnd="4dp">
-
-            <TextView
-                android:gravity="start"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/total_km_to_date"/>
-
-            <TextView
-                android:id="@+id/totalDistanceToDate"
-                android:gravity="end|center_vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:text="1000km"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingStart="4dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:gravity="start"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/adjusted_pace"/>
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:paddingRight="8dp"
+            android:paddingLeft="4dp"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/adjustedPace"
-                android:gravity="end|center_vertical"
+                android:gravity="center"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:text="1000km"/>
+                android:layout_height="wrap_content"
+                android:textSize="42dp"
+                android:textStyle="bold"
+                android:textColor="@color/accent"
+                tools:text="1000"/>
+
+            <TextView
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="10dp"
+                android:text="@string/adjusted_pace"/>
 
         </LinearLayout>
 
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/primary_text"/>
 
 </LinearLayout>

@@ -13,11 +13,12 @@
     <string name="title_authenticate">Connect to Strava</string>
     <string name="title_main">My Adjusted Pace</string>
 
-    <string name="week_format">Week commencing %1$s</string>
-    <string name="km_this_week">km this\nweek:</string>
-    <string name="total_km_to_date">Total km\nto date:</string>
-    <string name="adjusted_pace">Adjusted\nPace:</string>
+    <string name="week_format">week %1$d starting %2$s</string>
+    <string name="km_this_week">km this week</string>
+    <string name="total_km_to_date">km to date</string>
+    <string name="adjusted_pace">Adjusted Pace (km/week)</string>
 
-    <string name="km_format">%1$.1fkm</string>
-    <string name="pace_per_week_format">%1$.1fkm/week</string>
+    <string name="km_format">%1$.1f km</string>
+    <string name="pace_per_week_format">%1$.1f</string>
+    <string name="invalid_adjusted_pace">--</string>
 </resources>

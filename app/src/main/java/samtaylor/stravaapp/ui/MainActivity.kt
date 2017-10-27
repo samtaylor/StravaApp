@@ -26,14 +26,14 @@ class MainActivity : AppCompatActivity() {
 
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         recyclerView.setHasFixedSize(true)
-
-        recyclerView.visibility = View.GONE
-        progressBar.visibility = View.VISIBLE
     }
 
     override fun onResume() {
 
         super.onResume()
+
+        recyclerView.visibility = View.GONE
+        progressBar.visibility = View.VISIBLE
 
         val accessToken = Persistence(this).getString(Persistence.ACCESS_TOKEN)
         val targetInMetres = Persistence(this).getInt(Persistence.TARGET) * 1000F
@@ -46,7 +46,8 @@ class MainActivity : AppCompatActivity() {
 
                     val data = it.ridesOnly().currentYearOnly().groupByWeek(true).toSortedMap(kotlin.Comparator { first, second ->
 
-                        first.compareTo(second)
+                        //first.compareTo(second)
+                        second.compareTo(first)
                     }).values.toList()
 
                     recyclerView.adapter = ActivityAdapter(data, targetInMetres)
@@ -111,11 +112,12 @@ class MainActivity : AppCompatActivity() {
         override fun onBindViewHolder(holder: ActivityViewHolder?, position: Int) {
 
             var totalDistance = 0F
-            (0 .. position).forEach {
+            val week = data.size - 1 - position
+            (0 .. week).forEach {
 
                 totalDistance += data[it].totalDistance
             }
-            holder?.bind(position + 1, data[position].totalDistance, totalDistance, target)
+            holder?.bind(week, data[week].totalDistance, totalDistance, target)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ActivityViewHolder {
@@ -133,20 +135,26 @@ class MainActivity : AppCompatActivity() {
         fun bind(week: Int, distance: Float, totalDistance: Float, target: Float) {
 
             val date = Calendar.getInstance(Locale.UK)
-            date[Calendar.WEEK_OF_YEAR] = week
+            date[Calendar.WEEK_OF_YEAR] = week + 1
             date[Calendar.DAY_OF_WEEK] = date.firstDayOfWeek
 
             val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.UK)
 
-            itemView.findViewById<TextView>(R.id.date).text = itemView.context.getString(R.string.week_format, simpleDateFormat.format(date.time))
+            itemView.findViewById<TextView>(R.id.date).text = itemView.context.getString(R.string.week_format, week + 1, simpleDateFormat.format(date.time))
 
             itemView.distance.text = itemView.context.getString(R.string.km_format, distance/1000F)
             itemView.totalDistanceToDate.text = itemView.context.getString(R.string.km_format, totalDistance/1000F)
 
-            val weeksRemaining = 52 - week
+            val weeksRemaining = 52 - (week + 1)
             val adjustedPace = (target - totalDistance) / weeksRemaining
 
-            itemView.adjustedPace.text = itemView.context.getString(R.string.pace_per_week_format, adjustedPace/1000F)
+            if (adjustedPace < 0 || adjustedPace == Float.POSITIVE_INFINITY || adjustedPace == Float.POSITIVE_INFINITY) {
+
+                itemView.adjustedPace.text = itemView.context.getString(R.string.invalid_adjusted_pace)
+            } else {
+
+                itemView.adjustedPace.text = itemView.context.getString(R.string.pace_per_week_format, adjustedPace / 1000F)
+            }
         }
     }
 }
