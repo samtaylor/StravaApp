@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Week commencing 01/01/2017"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="8dp"
+        android:weightSum="3">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:paddingEnd="4dp">
+
+            <TextView
+                android:gravity="start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/km_this_week"/>
+
+            <TextView
+                android:id="@+id/distance"
+                android:gravity="end|center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:text="1000km"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp">
+
+            <TextView
+                android:gravity="start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/total_km_to_date"/>
+
+            <TextView
+                android:id="@+id/totalDistanceToDate"
+                android:gravity="end|center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:text="1000km"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingStart="4dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:gravity="start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/adjusted_pace"/>
+
+            <TextView
+                android:id="@+id/adjustedPace"
+                android:gravity="end|center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:text="1000km"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

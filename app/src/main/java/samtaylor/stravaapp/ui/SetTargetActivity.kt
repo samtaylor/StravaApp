@@ -61,7 +61,7 @@ class SetTargetActivity : AppCompatActivity() {
 //
 //            ActivityCatalogue().fetch(accessToken) {
 //
-//                it.filterByType("Ride").filterByYear("2015").groupByWeek().toSortedMap(Comparator { first, second ->
+//                it.ridesOnly("Ride").currentYearOnly("2015").groupByWeek().toSortedMap(Comparator { first, second ->
 //
 //                    first.compareTo(second)
 //                }).forEach {

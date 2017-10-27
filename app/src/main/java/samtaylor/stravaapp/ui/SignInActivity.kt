@@ -34,6 +34,7 @@ class SignInActivity : AppCompatActivity() {
             Persistence(this).getInt(Persistence.TARGET) == 0 -> {
 
                 startActivity(Intent(this, SetTargetActivity::class.java))
+                finish()
             }
 
             else -> {
@@ -69,7 +70,17 @@ class SignInActivity : AppCompatActivity() {
                         val accessToken = json.getString("access_token")
                         Persistence(this).putString(Persistence.ACCESS_TOKEN, accessToken)
 
-                        startActivity(Intent(this, SetTargetActivity::class.java))
+                        if (Persistence(this).getInt(Persistence.TARGET) == 0) {
+
+                            startActivity(Intent(this, SetTargetActivity::class.java))
+                            finish()
+                        }
+                        else {
+
+                            startActivity(Intent(this, MainActivity::class.java))
+                            finish()
+                        }
+
                     }
 
                     else -> {

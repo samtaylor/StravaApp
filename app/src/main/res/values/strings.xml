@@ -12,4 +12,12 @@
     <string name="title_set_target">Set a Target</string>
     <string name="title_authenticate">Connect to Strava</string>
     <string name="title_main">My Adjusted Pace</string>
+
+    <string name="week_format">Week commencing %1$s</string>
+    <string name="km_this_week">km this\nweek:</string>
+    <string name="total_km_to_date">Total km\nto date:</string>
+    <string name="adjusted_pace">Adjusted\nPace:</string>
+
+    <string name="km_format">%1$.1fkm</string>
+    <string name="pace_per_week_format">%1$.1fkm/week</string>
 </resources>

@@ -69,7 +69,7 @@ class AuthActivity : AppCompatActivity() {
             }
         }
 
-        webView.loadUrl("https://www.strava.com/oauth/authorize?client_id=21008&response_type=code&redirect_uri=http://127.0.0.1&approval_prompt=force")
+        webView.loadUrl("https://www.strava.com/oauth/authorize?client_id=21008&response_type=code&redirect_uri=http://127.0.0.1&scope=view_private")
     }
 
     override fun onDestroy() {

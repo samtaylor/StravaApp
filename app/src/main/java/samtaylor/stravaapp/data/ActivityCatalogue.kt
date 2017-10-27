@@ -32,10 +32,11 @@ class ActivityCatalogue(private val catalogue: ArrayList<Activity> = ArrayList()
         fetch(accessToken, 1, catalogue, finished)
     }
 
-    fun filterByType(type: String): ActivityCatalogue = ActivityCatalogue(catalogue.filter { it.type == type } as ArrayList<Activity>)
+    fun ridesOnly(): ActivityCatalogue = ActivityCatalogue(catalogue.filter { it.type == "Ride" } as ArrayList<Activity>)
 
-    fun filterByYear(year: String): ActivityCatalogue = ActivityCatalogue(catalogue.filter {
+    fun currentYearOnly(): ActivityCatalogue = ActivityCatalogue(catalogue.filter {
 
+        val year = Calendar.getInstance(Locale.UK)[Calendar.YEAR]
         val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK)
         val startDate = simpleDateFormat.parse("$year-01-01T00:00:00Z")
         val endDate = simpleDateFormat.parse("$year-12-31T23:59:59Z")
@@ -47,15 +48,49 @@ class ActivityCatalogue(private val catalogue: ArrayList<Activity> = ArrayList()
 
     } as ArrayList<Activity>)
 
-    fun groupByYear(): Map<Int, ActivityCatalogue> = groupBy(Calendar.YEAR)
+    fun groupByMonth(addMissing: Boolean = false): Map<Int, ActivityCatalogue> {
 
-    fun groupByMonth(): Map<Int, ActivityCatalogue> = groupBy(Calendar.MONTH)
+        val newCatalogue = groupBy(Calendar.MONTH)
+
+        if (addMissing) {
+
+            val currentMonth = Calendar.getInstance(Locale.UK)[Calendar.MONTH]
+
+            (Calendar.JANUARY .. currentMonth).forEach {
+
+                if (!newCatalogue.containsKey(it)) {
+
+                    newCatalogue.put(it, ActivityCatalogue())
+                }
+            }
+        }
+
+        return newCatalogue
+    }
 
     fun groupByDay(): Map<Int, ActivityCatalogue> = groupBy(Calendar.DAY_OF_YEAR)
 
-    fun groupByWeek(): Map<Int, ActivityCatalogue> = groupBy(Calendar.WEEK_OF_YEAR)
+    fun groupByWeek(addMissing: Boolean = false): Map<Int, ActivityCatalogue> {
 
-    private fun groupBy(grouping: Int) : Map<Int, ActivityCatalogue> {
+        val newCatalogue = groupBy(Calendar.WEEK_OF_YEAR)
+
+        if (addMissing) {
+
+            val currentWeek = Calendar.getInstance(Locale.UK)[Calendar.WEEK_OF_YEAR]
+
+            (1 .. currentWeek).forEach {
+
+                if (!newCatalogue.containsKey(it)) {
+
+                    newCatalogue.put(it, ActivityCatalogue())
+                }
+            }
+        }
+
+        return newCatalogue
+    }
+
+    private fun groupBy(grouping: Int) : HashMap<Int, ActivityCatalogue> {
 
         val groupings = HashMap<Int, ActivityCatalogue>()
         val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK)
@@ -63,7 +98,8 @@ class ActivityCatalogue(private val catalogue: ArrayList<Activity> = ArrayList()
         catalogue.forEach {
 
             simpleDateFormat.timeZone = TimeZone.getTimeZone(it.timezone)
-            val date = Calendar.getInstance()
+            val date = Calendar.getInstance(Locale.UK)
+            date.firstDayOfWeek = Calendar.MONDAY
             date.time = simpleDateFormat.parse(it.start_date_local)
 
             val groupKey = date[grouping]
