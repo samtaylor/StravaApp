@@ -187,7 +187,8 @@ class MainActivity : AppCompatActivity() {
 
             val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.UK)
 
-            itemView.findViewById<TextView>(R.id.date).text = itemView.context.getString(R.string.week_format, week + 1, simpleDateFormat.format(date.time))
+            itemView.findViewById<TextView>(R.id.date).text = simpleDateFormat.format(date.time)
+            itemView.findViewById<TextView>(R.id.weekNumber).text = itemView.context.getString(R.string.week_format, week + 1)
 
             itemView.distance.text = itemView.context.getString(R.string.km_format, distance/1000F)
             itemView.totalDistanceToDate.text = itemView.context.getString(R.string.km_format, totalDistance/1000F)
