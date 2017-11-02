@@ -10,10 +10,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-class ActivityCatalogue(private val catalogue: ArrayList<Activity> = ArrayList()) {
-
-    val size: Int
-    get() = catalogue.size
+class ActivityCatalogue(private val cache: PersistentCache, private val catalogue: ArrayList<Activity> = ArrayList()) {
 
     val totalDistance: Float
     get() {
@@ -32,9 +29,9 @@ class ActivityCatalogue(private val catalogue: ArrayList<Activity> = ArrayList()
         fetch(accessToken, 1, catalogue, finished)
     }
 
-    fun ridesOnly(): ActivityCatalogue = ActivityCatalogue(catalogue.filter { it.type == "Ride" } as ArrayList<Activity>)
+    fun ridesOnly(): ActivityCatalogue = ActivityCatalogue(cache, catalogue.filter { it.type == "Ride" } as ArrayList<Activity>)
 
-    fun currentYearOnly(): ActivityCatalogue = ActivityCatalogue(catalogue.filter {
+    fun currentYearOnly(): ActivityCatalogue = ActivityCatalogue(cache, catalogue.filter {
 
         val year = Calendar.getInstance(Locale.UK)[Calendar.YEAR]
         val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK)
@@ -60,7 +57,7 @@ class ActivityCatalogue(private val catalogue: ArrayList<Activity> = ArrayList()
 
                 if (!newCatalogue.containsKey(it)) {
 
-                    newCatalogue.put(it, ActivityCatalogue())
+                    newCatalogue.put(it, ActivityCatalogue(cache))
                 }
             }
         }
@@ -82,7 +79,7 @@ class ActivityCatalogue(private val catalogue: ArrayList<Activity> = ArrayList()
 
                 if (!newCatalogue.containsKey(it)) {
 
-                    newCatalogue.put(it, ActivityCatalogue())
+                    newCatalogue.put(it, ActivityCatalogue(cache))
                 }
             }
         }
@@ -103,7 +100,7 @@ class ActivityCatalogue(private val catalogue: ArrayList<Activity> = ArrayList()
             date.time = simpleDateFormat.parse(it.start_date_local)
 
             val groupKey = date[grouping]
-            val yearList = groupings[groupKey]?: ActivityCatalogue()
+            val yearList = groupings[groupKey]?: ActivityCatalogue(cache)
             yearList.catalogue.add(it)
             groupings.put(groupKey, yearList)
         }
@@ -113,25 +110,42 @@ class ActivityCatalogue(private val catalogue: ArrayList<Activity> = ArrayList()
 
     private fun fetch(accessToken: String, page: Int, activities: ArrayList<Activity>, finished: (ActivityCatalogue) -> Unit) {
 
-        "https://www.strava.com/api/v3/athlete/activities?page=$page".httpGet().header("Authorization" to "Bearer $accessToken").response { _, _, result ->
+        val url = "https://www.strava.com/api/v3/athlete/activities?page=$page"
+        val cachedResponse = cache.getCachedResponse(url)
 
-            when (result) {
+        if (cachedResponse == null) {
 
-                is Result.Success -> {
+            url.httpGet().header("Authorization" to "Bearer $accessToken").response { _, _, result ->
 
-                    val type = object: TypeToken<List<Activity>>() {}.type
+                when (result) {
 
-                    val fetchedActivities = Gson().fromJson<List<Activity>>(String(result.get()), type)
-                    if (fetchedActivities.isNotEmpty()) {
+                    is Result.Success -> {
 
-                        activities.addAll(fetchedActivities)
-                        fetch(accessToken, page + 1, activities, finished)
-                    } else {
-
-                        finished(this)
+                        val json = String(result.get())
+                        parseJsonResponse(json, activities, accessToken, page, finished)
+                        cache.setCachedResponse(url, json)
                     }
                 }
             }
+        }
+        else {
+
+            parseJsonResponse(cachedResponse, activities, accessToken, page, finished)
+        }
+    }
+
+    private fun parseJsonResponse(json: String, activities: ArrayList<Activity>, accessToken: String, page: Int, finished: (ActivityCatalogue) -> Unit) {
+
+        val type = object : TypeToken<List<Activity>>() {}.type
+
+        val fetchedActivities = Gson().fromJson<List<Activity>>(json, type)
+        if (fetchedActivities.isNotEmpty()) {
+
+            activities.addAll(fetchedActivities)
+            fetch(accessToken, page + 1, activities, finished)
+        } else {
+
+            finished(this)
         }
     }
 }

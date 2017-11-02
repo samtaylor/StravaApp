@@ -16,6 +16,7 @@ import kotlinx.android.synthetic.main.list_item_pace.view.*
 import samtaylor.stravaapp.R
 import samtaylor.stravaapp.data.ActivityCatalogue
 import samtaylor.stravaapp.data.Persistence
+import samtaylor.stravaapp.data.PersistentCache
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -47,7 +48,7 @@ class MainActivity : AppCompatActivity() {
 
             if (targetInMetres > -1) {
 
-                ActivityCatalogue().fetch(accessToken) {
+                ActivityCatalogue(PersistentCache(Persistence(this))).fetch(accessToken) {
 
                     val data = it.ridesOnly().currentYearOnly().groupByWeek(true).toSortedMap(kotlin.Comparator { first, second ->
 
@@ -63,11 +64,17 @@ class MainActivity : AppCompatActivity() {
                         DataPoint(index.toDouble(), totalDistance)
                     }
 
+                    var maxPace = 0.0
                     totalDistance = 0.0
                     val adjustedPaceArray = Array(data.size) { index ->
 
                         totalDistance += data[index].totalDistance
                         val adjustedPace = (targetInMetres - totalDistance) / (52 - (index + 1)) / 1000.0
+
+                        if (maxPace < adjustedPace) {
+
+                            maxPace = adjustedPace
+                        }
 
                         DataPoint(index.toDouble(), adjustedPace)
                     }
@@ -78,14 +85,18 @@ class MainActivity : AppCompatActivity() {
                     val adjustedPaceSeries = LineGraphSeries<DataPoint>(adjustedPaceArray)
                     adjustedPaceSeries.color = resources.getColor(R.color.accent)
 
+                    lineChart.removeAllSeries()
                     lineChart.addSeries(distanceSeries)
+
+                    lineChart.secondScale.removeAllSeries()
                     lineChart.secondScale.addSeries(adjustedPaceSeries)
                     lineChart.secondScale.setMinY(0.0)
-                    lineChart.secondScale.setMaxY(10.0)
+                    lineChart.secondScale.setMaxY(maxPace)
+                    lineChart.secondScale.calcCompleteRange()
 
                     lineChart.viewport.isXAxisBoundsManual = true
                     lineChart.viewport.setMinX(0.0)
-                    lineChart.viewport.setMaxX(52.0)
+                    lineChart.viewport.setMaxX(55.0)
 
                     recyclerView.visibility = View.VISIBLE
                     chartContainer.visibility = View.VISIBLE
