@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
 
         recyclerView.visibility = View.GONE
-        lineChart.visibility = View.GONE
+        chartContainer.visibility = View.GONE
         progressBar.visibility = View.VISIBLE
 
         val accessToken = Persistence(this).getString(Persistence.ACCESS_TOKEN)
@@ -52,21 +52,21 @@ class MainActivity : AppCompatActivity() {
                     val data = it.ridesOnly().currentYearOnly().groupByWeek(true).toSortedMap(kotlin.Comparator { first, second ->
 
                         second.compareTo(first)
-                    }).values.toList()
+                    }).values.toList().asReversed()
 
                     recyclerView.adapter = ActivityAdapter(data, targetInMetres)
 
                     var totalDistance = 0.0
                     val distanceArray = Array(data.size) { index ->
 
-                        totalDistance += data.asReversed()[index].totalDistance / 1000.0
+                        totalDistance += data[index].totalDistance / 1000.0
                         DataPoint(index.toDouble(), totalDistance)
                     }
 
                     totalDistance = 0.0
                     val adjustedPaceArray = Array(data.size) { index ->
 
-                        totalDistance += data.asReversed()[index].totalDistance
+                        totalDistance += data[index].totalDistance
                         val adjustedPace = (targetInMetres - totalDistance) / (52 - (index + 1)) / 1000.0
 
                         DataPoint(index.toDouble(), adjustedPace)
@@ -88,7 +88,7 @@ class MainActivity : AppCompatActivity() {
                     lineChart.viewport.setMaxX(52.0)
 
                     recyclerView.visibility = View.VISIBLE
-                    lineChart.visibility = View.VISIBLE
+                    chartContainer.visibility = View.VISIBLE
                     progressBar.visibility = View.GONE
                 }
             } else {
