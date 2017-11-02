@@ -28,7 +28,7 @@ class PersistentCache(private val persistence: Persistence) {
         }
     }
 
-    fun setCachedResponse(url: String, response: String, liveForInMillis: Long = 60 * 1000) {
+    fun setCachedResponse(url: String, response: String, liveForInMillis: Long = 60 * 5 * 1000) {
 
         val entry = JSONObject()
         entry.put("response", response)
