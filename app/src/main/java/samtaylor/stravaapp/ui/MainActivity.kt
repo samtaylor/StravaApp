@@ -3,7 +3,7 @@ package samtaylor.stravaapp.ui
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
-import android.provider.ContactsContract
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -14,12 +14,11 @@ import com.jjoe64.graphview.series.LineGraphSeries
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.list_item_pace.view.*
 import samtaylor.stravaapp.R
+import samtaylor.stravaapp.data.ActivityCache
 import samtaylor.stravaapp.data.ActivityCatalogue
 import samtaylor.stravaapp.data.Persistence
-import samtaylor.stravaapp.data.PersistentCache
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity() {
 
@@ -48,7 +47,7 @@ class MainActivity : AppCompatActivity() {
 
             if (targetInMetres > -1) {
 
-                ActivityCatalogue(PersistentCache(Persistence(this))).fetch(accessToken) {
+                ActivityCatalogue(ActivityCache(Persistence(this))).fetch(accessToken) {
 
                     val data = it.ridesOnly().currentYearOnly().groupByWeek(true).toSortedMap(kotlin.Comparator { first, second ->
 
@@ -80,10 +79,10 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     val distanceSeries = LineGraphSeries<DataPoint>(distanceArray)
-                    distanceSeries.color = resources.getColor(R.color.primary_dark)
+                    distanceSeries.color = ContextCompat.getColor(this, R.color.primary_dark)
 
                     val adjustedPaceSeries = LineGraphSeries<DataPoint>(adjustedPaceArray)
-                    adjustedPaceSeries.color = resources.getColor(R.color.accent)
+                    adjustedPaceSeries.color = ContextCompat.getColor(this, R.color.accent)
 
                     lineChart.removeAllSeries()
                     lineChart.addSeries(distanceSeries)

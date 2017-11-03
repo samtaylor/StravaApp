@@ -10,7 +10,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-class ActivityCatalogue(private val cache: PersistentCache, private val catalogue: ArrayList<Activity> = ArrayList()) {
+class ActivityCatalogue(private val activityCache: ActivityCache, private val catalogue: ArrayList<Activity> = ArrayList()) {
 
     val totalDistance: Float
     get() {
@@ -26,12 +26,15 @@ class ActivityCatalogue(private val cache: PersistentCache, private val catalogu
 
     fun fetch(accessToken: String, finished: (ActivityCatalogue) -> Unit) {
 
+        catalogue.clear()
+        catalogue.addAll(activityCache.getAll())
+
         fetch(accessToken, 1, catalogue, finished)
     }
 
-    fun ridesOnly(): ActivityCatalogue = ActivityCatalogue(cache, catalogue.filter { it.type == "Ride" } as ArrayList<Activity>)
+    fun ridesOnly(): ActivityCatalogue = ActivityCatalogue(activityCache, catalogue.filter { it.type == "Ride" } as ArrayList<Activity>)
 
-    fun currentYearOnly(): ActivityCatalogue = ActivityCatalogue(cache, catalogue.filter {
+    fun currentYearOnly(): ActivityCatalogue = ActivityCatalogue(activityCache, catalogue.filter {
 
         val year = Calendar.getInstance(Locale.UK)[Calendar.YEAR]
         val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK)
@@ -45,28 +48,6 @@ class ActivityCatalogue(private val cache: PersistentCache, private val catalogu
 
     } as ArrayList<Activity>)
 
-    fun groupByMonth(addMissing: Boolean = false): Map<Int, ActivityCatalogue> {
-
-        val newCatalogue = groupBy(Calendar.MONTH)
-
-        if (addMissing) {
-
-            val currentMonth = Calendar.getInstance(Locale.UK)[Calendar.MONTH]
-
-            (Calendar.JANUARY .. currentMonth).forEach {
-
-                if (!newCatalogue.containsKey(it)) {
-
-                    newCatalogue.put(it, ActivityCatalogue(cache))
-                }
-            }
-        }
-
-        return newCatalogue
-    }
-
-    fun groupByDay(): Map<Int, ActivityCatalogue> = groupBy(Calendar.DAY_OF_YEAR)
-
     fun groupByWeek(addMissing: Boolean = false): Map<Int, ActivityCatalogue> {
 
         val newCatalogue = groupBy(Calendar.WEEK_OF_YEAR)
@@ -79,7 +60,7 @@ class ActivityCatalogue(private val cache: PersistentCache, private val catalogu
 
                 if (!newCatalogue.containsKey(it)) {
 
-                    newCatalogue.put(it, ActivityCatalogue(cache))
+                    newCatalogue.put(it, ActivityCatalogue(activityCache))
                 }
             }
         }
@@ -100,7 +81,7 @@ class ActivityCatalogue(private val cache: PersistentCache, private val catalogu
             date.time = simpleDateFormat.parse(it.start_date_local)
 
             val groupKey = date[grouping]
-            val yearList = groupings[groupKey]?: ActivityCatalogue(cache)
+            val yearList = groupings[groupKey]?: ActivityCatalogue(activityCache)
             yearList.catalogue.add(it)
             groupings.put(groupKey, yearList)
         }
@@ -111,26 +92,17 @@ class ActivityCatalogue(private val cache: PersistentCache, private val catalogu
     private fun fetch(accessToken: String, page: Int, activities: ArrayList<Activity>, finished: (ActivityCatalogue) -> Unit) {
 
         val url = "https://www.strava.com/api/v3/athlete/activities?page=$page"
-        val cachedResponse = cache.getCachedResponse(url)
 
-        if (cachedResponse == null) {
+        url.httpGet().header("Authorization" to "Bearer $accessToken").response { _, _, result ->
 
-            url.httpGet().header("Authorization" to "Bearer $accessToken").response { _, _, result ->
+            when (result) {
 
-                when (result) {
+                is Result.Success -> {
 
-                    is Result.Success -> {
-
-                        val json = String(result.get())
-                        parseJsonResponse(json, activities, accessToken, page, finished)
-                        cache.setCachedResponse(url, json)
-                    }
+                    val json = String(result.get())
+                    parseJsonResponse(json, activities, accessToken, page, finished)
                 }
             }
-        }
-        else {
-
-            parseJsonResponse(cachedResponse, activities, accessToken, page, finished)
         }
     }
 
@@ -139,9 +111,12 @@ class ActivityCatalogue(private val cache: PersistentCache, private val catalogu
         val type = object : TypeToken<List<Activity>>() {}.type
 
         val fetchedActivities = Gson().fromJson<List<Activity>>(json, type)
-        if (fetchedActivities.isNotEmpty()) {
+        val missingFromCache = fetchedActivities.filter { !activityCache.contain(it) }
+        activityCache.add(missingFromCache)
+        activities.addAll(missingFromCache)
 
-            activities.addAll(fetchedActivities)
+        if (missingFromCache.isNotEmpty()) {
+
             fetch(accessToken, page + 1, activities, finished)
         } else {
 

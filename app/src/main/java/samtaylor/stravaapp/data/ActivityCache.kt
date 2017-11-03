@@ -31,5 +31,10 @@ class ActivityCache(private val persistence: Persistence) {
         }
     }
 
+    fun add(activities: List<Activity>) {
+
+        activities.forEach { add(it) }
+    }
+
     fun getAll() : List<Activity> = activities
 }
