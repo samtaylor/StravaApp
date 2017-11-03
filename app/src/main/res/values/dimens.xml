@@ -5,4 +5,6 @@
     <dimen name="text_medium">18sp</dimen>
     <dimen name="text_large">26sp</dimen>
 
+    <dimen name="list_item_horizontal_padding">8dp</dimen>
+
 </resources>

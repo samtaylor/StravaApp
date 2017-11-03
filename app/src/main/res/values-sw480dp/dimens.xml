@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <dimen name="text_small">12sp</dimen>
-    <dimen name="text_medium">24sp</dimen>
-    <dimen name="text_large">38sp</dimen>
+    <dimen name="text_medium">30sp</dimen>
+    <dimen name="text_large">42sp</dimen>
+
+    <dimen name="list_item_horizontal_padding">16dp</dimen>
 
 </resources>
