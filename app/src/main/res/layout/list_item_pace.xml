@@ -2,38 +2,41 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:weightSum="10"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp">
+        android:layout_height="wrap_content"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp">
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
+            android:id="@+id/weekContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
-            android:gravity="center">
+            android:gravity="center_horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/title_week"
-                android:textSize="10sp"/>
+                android:textSize="@dimen/text_small"
+                android:textColor="@color/divider"
+                android:text="@string/title_week"/>
 
             <TextView
                 android:id="@+id/weekNumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="32dp"
+                android:textSize="@dimen/text_large"
                 android:textStyle="bold"
                 android:textColor="@color/divider"
                 tools:text="00"/>
@@ -42,117 +45,110 @@
                 android:id="@+id/date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="@dimen/text_small"
                 android:textColor="@color/divider"
-                android:textSize="10sp"
                 tools:text="01/01/2017"/>
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_weight="6"
-            android:layout_height="match_parent"
+            android:id="@+id/weeklyDistanceContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:gravity="center"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp">
+            android:paddingStart="4dp"
+            android:paddingEnd="2dp"
+            app:layout_constraintStart_toEndOf="@id/weekContainer"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/distanceToDateContainer">
 
-
-            <LinearLayout
+            <TextView
+                android:gravity="center"
+                android:maxLines="1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:textColor="@color/secondary_text"
+                android:textSize="@dimen/text_small"
+                android:text="@string/km_this_week"/>
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:paddingEnd="4dp">
-
-                    <TextView
-                        android:gravity="center"
-                        android:maxLines="1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/secondary_text"
-                        android:text="@string/km_this_week"/>
-
-                    <TextView
-                        android:id="@+id/distance"
-                        android:gravity="center"
-                        android:maxLines="1"
-                        android:textSize="18dp"
-                        android:textStyle="bold"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:textColor="@color/primary_dark"
-                        tools:text="1000km"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:paddingStart="4dp"
-                    android:paddingEnd="4dp">
-
-                    <TextView
-                        android:gravity="center"
-                        android:maxLines="1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/secondary_text"
-                        android:text="@string/total_km_to_date"/>
-
-                    <TextView
-                        android:id="@+id/totalDistanceToDate"
-                        android:maxLines="1"
-                        android:gravity="center"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:textStyle="bold"
-                        android:textColor="@color/primary_dark"
-                        android:textSize="18dp"
-                        tools:text="1000km"/>
-
-                </LinearLayout>
-
-            </LinearLayout>
+            <TextView
+                android:id="@+id/distance"
+                android:gravity="center"
+                android:maxLines="1"
+                android:textSize="@dimen/text_medium"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textColor="@color/primary_dark"
+                tools:text="9999"/>
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:id="@+id/distanceToDateContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="2dp"
+            android:paddingEnd="4dp"
+            app:layout_constraintEnd_toStartOf="@id/adjustedPaceContainer"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/weeklyDistanceContainer">
+
+            <TextView
+                android:gravity="center"
+                android:maxLines="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_small"
+                android:textColor="@color/secondary_text"
+                android:text="@string/total_km_to_date"/>
+
+            <TextView
+                android:id="@+id/totalDistanceToDate"
+                android:maxLines="1"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textStyle="bold"
+                android:textColor="@color/primary_dark"
+                android:textSize="@dimen/text_medium"
+                tools:text="9999"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/adjustedPaceContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_centerVertical="true"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
 
             <TextView
                 android:id="@+id/adjustedPace"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="42dp"
+                android:textSize="@dimen/text_large"
                 android:textStyle="bold"
                 android:textColor="@color/accent"
-                tools:text="100"/>
+                tools:text="999.9"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="10dp"
+                android:textColor="@color/divider"
+                android:textSize="@dimen/text_small"
                 android:text="@string/adjusted_pace"/>
 
         </LinearLayout>
 
-    </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

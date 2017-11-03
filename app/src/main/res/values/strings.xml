@@ -19,7 +19,7 @@
     <string name="total_km_to_date">km to date</string>
     <string name="adjusted_pace">km/week</string>
 
-    <string name="km_format">%1$.1f km</string>
+    <string name="km_format">%1$.1f</string>
     <string name="pace_per_week_format">%1$.1f</string>
     <string name="invalid_adjusted_pace">--</string>
 </resources>
