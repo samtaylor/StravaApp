@@ -21,5 +21,6 @@ class Persistence(private val context: Context) {
 
         val ACCESS_TOKEN = "access_token"
         val TARGET = "target"
+        val ACTIVITY_CACHE = "activity_cache"
     }
 }
