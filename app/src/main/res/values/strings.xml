@@ -22,4 +22,7 @@
     <string name="km_format">%1$.1f</string>
     <string name="pace_per_week_format">%1$.1f</string>
     <string name="invalid_adjusted_pace">--</string>
+    <string name="app_description">Set your distance target for the year, and keep track of your weekly progress.</string>
+    <string name="connect_to_strava_description">Connect to your Strava™ account, so the app can download your activity and calculate your pace.</string>
+    <string name="copyright">&#169; 2017</string>
 </resources>
